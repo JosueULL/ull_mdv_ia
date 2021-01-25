@@ -1,4 +1,4 @@
-* Múltiples tipos de agente persiguiendo al jugador
+# Múltiples tipos de agente persiguiendo al jugador
 
 En esta práctica se han creado 3 tipos distintos de agents y 3 superficies navmesh para cada uno. Se han incorporado distintos obstaculos en las puertas que afectan a cada tipo de agente.
 
