@@ -39,6 +39,8 @@ public class AIControl : MonoBehaviour
 
     public void Pursue()
     {
+        mNavMeshAgent.stoppingDistance = 3;
+
         // Se ha cambiado el algoritmo ya que el algoritmo proporcionado no funcionaba correctamente en escenarios
         // - El target puede estar moviendose de forma lateral, por lo que el lookAhead se tiene que aplicar al desplazamiento y no al vector forward
         // - El punto de lookAhead puede estar detrás del enemigo por lo que en ese caso queremos ir directos hacia el player en lugar de retroceder.
@@ -59,8 +61,12 @@ public class AIControl : MonoBehaviour
 
     public void Seek(Vector3 position)
     {
-        mNavMeshAgent.SetDestination(position);
+        if (Vector3.Distance(transform.position, position) > mNavMeshAgent.stoppingDistance)
+        {
+            mNavMeshAgent.SetDestination(position);
+        }
         Debug.DrawLine(transform.position, position, Color.yellow);
+
     }
 
     public void Stop()
@@ -79,6 +85,8 @@ public class AIControl : MonoBehaviour
     Vector3 mWanderTarget = Vector3.zero;
     public void Wander(float radius, float distance, float jitter)
     {
+        mNavMeshAgent.stoppingDistance = 1;
+
         if (mWanderTarget == Vector3.zero)
             mWanderTarget = Vector3.forward * distance;
 
@@ -96,6 +104,8 @@ public class AIControl : MonoBehaviour
 
     public void CleverHide()
     {
+        mNavMeshAgent.stoppingDistance = 1;
+
         float dist = Mathf.Infinity;
         Vector3 chosenSpot = Vector3.zero;
         Vector3 chosenDir = Vector3.zero;
@@ -123,9 +133,13 @@ public class AIControl : MonoBehaviour
         RaycastHit info;
         float distance = 250.0f;
         hideCol.Raycast(backRay, out info, distance);
+
         Debug.DrawRay(chosenSpot, -chosenDir.normalized * distance, Color.red);
 
-        Seek(info.point + chosenDir.normalized);
+        Vector3 seekPoint = info.point + chosenDir.normalized;
+        Debug.DrawLine(seekPoint, seekPoint + Vector3.up * 10, Color.green);
+
+        Seek(seekPoint);
     }
     
     public void OnDrawGizmos()

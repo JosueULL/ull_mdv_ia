@@ -5,7 +5,9 @@ public class Health : MonoBehaviour
 {
     public float MaxHealth;
     public Image ImageFill;
-    
+    public float AutoHealInterval = 1f;
+    public float AutoHealAmount = 0.05f;
+
     [HideInInspector]
     public float CurrentHealth;
 
@@ -13,6 +15,14 @@ public class Health : MonoBehaviour
     {
         CurrentHealth = MaxHealth;
         Change(0);
+
+        if (AutoHealAmount > 0f)
+            InvokeRepeating("AutoHeal", 0f, AutoHealInterval);
+    }
+
+    private void AutoHeal()
+    {
+        Regenerate(AutoHealAmount);
     }
 
     public void Damage(float amount)
